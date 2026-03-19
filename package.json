@@ -4,12 +4,16 @@
   "private": true,
   "main": "index.js",
   "scripts": {
-    "start": "node index.js"
+    "start": "node index.js",
+    "dev": "node -r dotenv/config index.js"
   },
   "dependencies": {
     "discord.js": "^14.19.3"
   },
   "engines": {
     "node": ">=18"
+  },
+  "devDependencies": {
+    "dotenv": "^17.3.1"
   }
 }

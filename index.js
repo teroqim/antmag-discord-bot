@@ -189,16 +189,14 @@ client.on("interactionCreate", async (interaction) => {
   if (interaction.isButton() && interaction.customId === "quiz_reveal") {
     try {
       const existingEmbed = interaction.message.embeds[0];
-      const answerField = existingEmbed?.footer?.text?.match(/answer:(.+)$/);
-      const gameSlug = existingEmbed?.url?.replace("https://www.antmag.net/guide/", "") || "";
 
-      // The answer is stored in a hidden field
-      const hiddenData = interaction.message.components?.[0]?.components?.[0]?.customId;
-      // We'll parse from the embed data instead
+      const answerRaw = existingEmbed?.fields?.find((f) => f.name === "🔒 Answer")?.value;
+      const answer = answerRaw?.replace(/\|\|/g, "") || "Check the guide for the answer!";
+
       const answerEmbed = new EmbedBuilder()
         .setColor(BRAND_GREEN)
         .setTitle(`✅ Answer revealed!`)
-        .setDescription(existingEmbed?.fields?.find((f) => f.name === "🔒 Answer")?.value?.replace(/\|\|/g, "") || "Check the guide for the answer!")
+        .setDescription(answer)
         .setFooter({ text: "antmag.net — AI-verified gaming guides" });
 
       if (existingEmbed?.url) {
