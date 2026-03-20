@@ -25,12 +25,18 @@ const commands = [
   new SlashCommandBuilder()
     .setName("guide")
     .setDescription("Ask a question about any game — AI reads the guide and answers")
-    .addStringOption((o) => o.setName("game").setDescription('Game name (e.g. "elden ring", "zelda totk")').setRequired(true))
-    .addStringOption((o) => o.setName("topic").setDescription('Your question (e.g. "how to beat malenia", "best build")').setRequired(false)),
+    .addStringOption((o) =>
+      o.setName("game").setDescription('Game name (e.g. "elden ring", "zelda totk")').setRequired(true),
+    )
+    .addStringOption((o) =>
+      o.setName("topic").setDescription('Your question (e.g. "how to beat malenia", "best build")').setRequired(false),
+    ),
   new SlashCommandBuilder()
     .setName("search")
     .setDescription("Search across all 1,494 game guides")
-    .addStringOption((o) => o.setName("query").setDescription('Your search (e.g. "fire resistance", "secret ending")').setRequired(true)),
+    .addStringOption((o) =>
+      o.setName("query").setDescription('Your search (e.g. "fire resistance", "secret ending")').setRequired(true),
+    ),
   new SlashCommandBuilder()
     .setName("tip")
     .setDescription("Get a random pro gaming tip")
@@ -39,7 +45,9 @@ const commands = [
     .setName("boss")
     .setDescription("Quick boss fight strategy — weakness, tips, recommended level")
     .addStringOption((o) => o.setName("game").setDescription('Game name (e.g. "elden ring")').setRequired(true))
-    .addStringOption((o) => o.setName("boss").setDescription('Boss name (e.g. "malenia", "ganondorf")').setRequired(true)),
+    .addStringOption((o) =>
+      o.setName("boss").setDescription('Boss name (e.g. "malenia", "ganondorf")').setRequired(true),
+    ),
   new SlashCommandBuilder()
     .setName("game")
     .setDescription("Get info about any game — rating, platforms, genres, guide sections")
@@ -52,15 +60,9 @@ const commands = [
   new SlashCommandBuilder()
     .setName("trending")
     .setDescription("See which games are trending — based on real search traffic"),
-  new SlashCommandBuilder()
-    .setName("quiz")
-    .setDescription("Random gaming trivia — test your knowledge!"),
-  new SlashCommandBuilder()
-    .setName("invite")
-    .setDescription("Add this bot to your own Discord server"),
-  new SlashCommandBuilder()
-    .setName("konami")
-    .setDescription("👀"),
+  new SlashCommandBuilder().setName("quiz").setDescription("Random gaming trivia — test your knowledge!"),
+  new SlashCommandBuilder().setName("invite").setDescription("Add this bot to your own Discord server"),
+  new SlashCommandBuilder().setName("konami").setDescription("👀"),
 ].map((command) => command.toJSON());
 
 const BRAND_PURPLE = 0x8b5cf6;
@@ -75,11 +77,7 @@ async function renderEasterEgg(interaction, egg, data, isSearch = false) {
   const eggEmbed = new EmbedBuilder()
     .setColor(egg.color || BRAND_PURPLE)
     .setTitle(egg.title)
-    .setDescription(
-      egg.ascii
-        ? `\`\`\`\n${egg.ascii}\n\`\`\`\n${egg.message}`
-        : egg.message,
-    )
+    .setDescription(egg.ascii ? `\`\`\`\n${egg.ascii}\n\`\`\`\n${egg.message}` : egg.message)
     .setFooter({ text: egg.footer || "antmag.net — you found a secret! 🥚" });
 
   if (egg.guideLink && egg.guideName) {
@@ -157,19 +155,14 @@ async function callBotApi(action, params = {}, method = "GET", body) {
 
 async function logUsage(interaction, command, payload) {
   try {
-    await callBotApi(
-      "log",
-      {},
-      "POST",
-      {
-        server_id: interaction.guildId,
-        server_name: interaction.guild?.name ?? null,
-        channel_id: interaction.channelId,
-        user_id: interaction.user?.id ?? null,
-        command,
-        ...payload,
-      },
-    );
+    await callBotApi("log", {}, "POST", {
+      server_id: interaction.guildId,
+      server_name: interaction.guild?.name ?? null,
+      channel_id: interaction.channelId,
+      user_id: interaction.user?.id ?? null,
+      command,
+      ...payload,
+    });
   } catch (error) {
     console.error("Usage log failed:", error.message);
   }
@@ -413,7 +406,9 @@ client.on("interactionCreate", async (interaction) => {
           embeds: [
             new EmbedBuilder()
               .setColor(BRAND_RED)
-              .setDescription(`No boss guide found for **${boss}** in **${game}**. Try \`/guide ${game} ${boss}\` instead.`)
+              .setDescription(
+                `No boss guide found for **${boss}** in **${game}**. Try \`/guide ${game} ${boss}\` instead.`,
+              )
               .setFooter({ text: "ANTMAG.NET — AI-Verified Gaming Guides" }),
           ],
         });
@@ -483,8 +478,10 @@ client.on("interactionCreate", async (interaction) => {
       if (data.metacritic) fields.push({ name: "Metacritic", value: `${data.metacritic}`, inline: true });
       if (data.rating) fields.push({ name: "Rating", value: `⭐ ${data.rating}`, inline: true });
       fields.push({ name: "Guide sections", value: `${data.sections}`, inline: true });
-      if (data.tags && data.tags.length > 0) fields.push({ name: "Tags", value: data.tags.slice(0, 4).join(", "), inline: false });
-      if (data.platforms && data.platforms.length > 0) fields.push({ name: "Platforms", value: data.platforms.slice(0, 5).join(", "), inline: false });
+      if (data.tags && data.tags.length > 0)
+        fields.push({ name: "Tags", value: data.tags.slice(0, 4).join(", "), inline: false });
+      if (data.platforms && data.platforms.length > 0)
+        fields.push({ name: "Platforms", value: data.platforms.slice(0, 5).join(", "), inline: false });
       if (data.release_date) fields.push({ name: "Release", value: data.release_date, inline: true });
 
       embed.addFields(fields);
@@ -549,9 +546,9 @@ client.on("interactionCreate", async (interaction) => {
       await interaction.deferReply();
       const data = await callBotApi("trending");
 
-      const lines = (data.trending || []).map(
-        (g, i) => `**${i + 1}.** ${g.title} — ${g.clicks_this_week} clicks (+${g.growth}%)`,
-      ).join("\n");
+      const lines = (data.trending || [])
+        .map((g, i) => `**${i + 1}.** ${g.title} — ${g.clicks_this_week} clicks (+${g.growth}%)`)
+        .join("\n");
 
       const embed = new EmbedBuilder()
         .setColor(BRAND_PURPLE)
@@ -586,10 +583,7 @@ client.on("interactionCreate", async (interaction) => {
           .setFooter({ text: "Click 'Show Answer' or check the spoiler above!" });
 
         const row = new ActionRowBuilder().addComponents(
-          new ButtonBuilder()
-            .setCustomId("quiz_reveal")
-            .setLabel("Show Answer")
-            .setStyle(ButtonStyle.Primary),
+          new ButtonBuilder().setCustomId("quiz_reveal").setLabel("Show Answer").setStyle(ButtonStyle.Primary),
         );
 
         await interaction.editReply({ embeds: [embed], components: [row] });
@@ -664,7 +658,7 @@ client.on("interactionCreate", async (interaction) => {
         {
           title: "⬆️⬆️⬇️⬇️⬅️➡️⬅️➡️🅱️🅰️",
           description:
-            '**30 lives unlocked!** ...just kidding. But you DID unlock the knowledge of 1,494 game guides. Use `/guide` wisely, young grasshopper.',
+            "**30 lives unlocked!** ...just kidding. But you DID unlock the knowledge of 1,494 game guides. Use `/guide` wisely, young grasshopper.",
           color: BRAND_GOLD,
         },
         {
@@ -682,13 +676,13 @@ client.on("interactionCreate", async (interaction) => {
         {
           title: "🍄 Thank you Mario!",
           description:
-            'But your princess is in another castle... along with 92,375 guide sections. Try `/search princess` to find her.',
+            "But your princess is in another castle... along with 92,375 guide sections. Try `/search princess` to find her.",
           color: 0xf87171,
         },
         {
           title: "⭐ Achievement unlocked!",
           description:
-            '**Secret Bot Whisperer** — You found the hidden command. +100 gamer points. Now try `/quiz` to prove you actually know stuff.',
+            "**Secret Bot Whisperer** — You found the hidden command. +100 gamer points. Now try `/quiz` to prove you actually know stuff.",
           color: BRAND_PURPLE,
         },
       ];
