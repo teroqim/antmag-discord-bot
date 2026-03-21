@@ -80,6 +80,8 @@ async function renderEasterEgg(interaction, egg, data, isSearch = false) {
     .setDescription(egg.ascii ? `\`\`\`\n${egg.ascii}\n\`\`\`\n${egg.message}` : egg.message)
     .setFooter({ text: egg.footer || "antmag.net — you found a secret! 🥚" });
 
+  if (egg.gif) eggEmbed.setImage(egg.gif);
+
   if (egg.guideLink && egg.guideName) {
     eggEmbed.addFields({
       name: egg.guideName,
@@ -629,7 +631,7 @@ client.on("interactionCreate", async (interaction) => {
     // /invite — Bot invite link
     // -------------------------------------------------------------------
     if (interaction.commandName === "invite") {
-      const inviteUrl = `https://discord.com/api/oauth2/authorize?client_id=${DISCORD_CLIENT_ID}&permissions=2147485696&scope=bot%20applications.commands`;
+      const inviteUrl = `https://discord.com/api/oauth2/authorize?client_id=${DISCORD_CLIENT_ID}&permissions=2147534848&scope=bot%20applications.commands`;
 
       const embed = new EmbedBuilder()
         .setColor(BRAND_PURPLE)
